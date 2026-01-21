@@ -1,0 +1,27 @@
+# Netlify Configuration for SUVIDHA Kiosk
+# This file should be at the repository root
+
+[build]
+  # Base directory is the frontend folder inside Subidhia
+  base = "Subidhia/frontend"
+  command = "npm install && npm run build"
+  publish = "Subidhia/frontend/build"
+
+# SPA Rewrites - All routes go to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Security Headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+
+# Cache static assets
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

@@ -1,0 +1,11 @@
+{
+    "buildCommand": "cd Subidhia/frontend && npm install && npm run build",
+    "outputDirectory": "Subidhia/frontend/build",
+    "framework": "create-react-app",
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/index.html"
+        }
+    ]
+}
