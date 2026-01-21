@@ -2,7 +2,7 @@
   "name": "suvidha-kiosk-frontend",
   "version": "1.0.0",
   "description": "SUVIDHA Kiosk Frontend Application - Smart Urban Virtual Interactive Digital Helpdesk Assistant",
-  "homepage": ".",
+  "homepage": "/",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
