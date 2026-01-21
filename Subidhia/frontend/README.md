@@ -1,56 +1,90 @@
-# SUVIDHA Kiosk Frontend
+# SUVIDHA - Smart Civic Services Kiosk
 
-A React-based frontend for the Smart Urban Virtual Interactive Digital Helpdesk Assistant (SUVIDHA) kiosk system.
+![SUVIDHA Logo](public/logo.svg)
 
-## Features
+**Smart Urban Virtual Interactive Digital Helpdesk Assistant**
 
-- 🌐 Multilingual Support (English, Hindi, Tamil)
-- ⚡ Electricity Bill Payment
-- 🔥 Gas Bill Payment
-- 💧 Water Bill Payment
-- ♻️ Waste Management Services
-- 📝 Complaint Registration
-- 📊 Real-time Status Tracking
-- 🔐 Secure Authentication
+A modern, multilingual civic services kiosk application for utility bill payments, service requests, and complaint management.
 
-## Installation
+## 🌐 Languages Supported
 
+| Language | Script | Region |
+|----------|--------|--------|
+| English | Latin | General |
+| हिंदी (Hindi) | Devanagari | General |
+| தமிழ் (Tamil) | Tamil | General |
+| অসমীয়া (Assamese) | Assamese | Assam |
+| বাংলা (Bengali) | Bengali | Barak Valley |
+| बड़ो (Bodo) | Devanagari | Bodoland |
+| কাৰ্বি (Karbi) | Assamese | Karbi Anglong |
+
+## 🚀 Quick Start
+
+### Development
 ```bash
 npm install
-```
-
-## Development
-
-```bash
 npm start
 ```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Build
-
+### Production Build
 ```bash
 npm run build
+npm run serve
 ```
 
-## Project Structure
+## 📦 Deployment
+
+### Deploy to Vercel (Recommended)
+1. Push your code to GitHub
+2. Go to [vercel.com](https://vercel.com)
+3. Sign in with GitHub
+4. Click "New Project" → Import this repository
+5. Vercel will auto-detect React and deploy!
+
+**Or use CLI:**
+```bash
+npm i -g vercel
+vercel --prod
+```
+
+### Deploy to Netlify
+1. Go to [netlify.com](https://netlify.com)
+2. Drag and drop the `build/` folder
+3. Your site is live!
+
+**Or use CLI:**
+```bash
+npm i -g netlify-cli
+npm run build
+netlify deploy --prod --dir=build
+```
+
+## 🏗️ Project Structure
 
 ```
-src/
-├── components/
-│   ├── HomeScreen.jsx     # Service selection landing page
-│   ├── LoginScreen.jsx    # User authentication
-│   ├── DashboardScreen.jsx # User dashboard
-│   ├── PaymentScreen.jsx  # Bill payment flow
-│   ├── ComplaintScreen.jsx # Complaint registration
-│   └── AdminDashboard.jsx # Admin management panel
-├── translations.js        # Multi-language support
-├── App.jsx               # Main app component
-└── index.js              # Entry point
+frontend/
+├── public/
+│   ├── index.html      # Main HTML with SEO & PWA
+│   ├── manifest.json   # PWA manifest
+│   └── logo.svg        # App logo
+├── src/
+│   ├── App.jsx         # Main app component
+│   ├── translations.js # i18n translations
+│   └── components/     # React components
+├── vercel.json         # Vercel config
+└── package.json        # Dependencies & scripts
 ```
 
-## Environment Variables
+## ⚡ Features
 
-Create a `.env` file in the frontend directory:
+- **Utility Services**: Electricity, Gas, Water, Waste Management
+- **Bill Payments**: Secure payment processing
+- **Complaint System**: Register and track complaints
+- **Multi-language**: 7 languages including Assam regional languages
+- **PWA Ready**: Installable as a mobile app
+- **Responsive**: Works on all devices
 
-```env
-REACT_APP_API_URL=http://localhost:5000/api
-```
+## 📄 License
+
+© 2026 SUVIDHA Kiosk. All rights reserved.

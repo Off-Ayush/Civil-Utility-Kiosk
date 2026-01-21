@@ -5,11 +5,14 @@ import {
     CreditCard, FileText, AlertCircle,
     Search, CheckCircle, XCircle,
     ChevronRight, Globe, Phone, Shield,
-    Building, Settings, BarChart2, Users
+    Building, Settings, BarChart2, Users,
+    ChevronDown
 } from 'lucide-react';
 import { LANGUAGES, translations } from '../translations';
 
 const HomeScreen = ({ onServiceSelect, t, lang, setLang }) => {
+    const [showLangMenu, setShowLangMenu] = useState(false);
+
     const services = [
         { id: 'electricity', icon: Zap, color: 'from-yellow-400 to-orange-500', bgGlow: 'shadow-yellow-500/30' },
         { id: 'gas', icon: Flame, color: 'from-red-400 to-pink-500', bgGlow: 'shadow-red-500/30' },
@@ -17,24 +20,67 @@ const HomeScreen = ({ onServiceSelect, t, lang, setLang }) => {
         { id: 'waste', icon: Trash2, color: 'from-green-400 to-emerald-500', bgGlow: 'shadow-green-500/30' },
     ];
 
+    // Group languages by region for better UX
+    const generalLanguages = ['en', 'hi', 'ta'];
+    const assamLanguages = ['as', 'bn', 'brx', 'kha'];
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col items-center justify-center p-8">
-            {/* Language Selector */}
+            {/* Language Selector - Enhanced for multiple languages */}
             <div className="absolute top-6 right-6">
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-lg rounded-xl p-2">
-                    <Globe className="w-5 h-5 text-white/70" />
-                    {Object.entries(LANGUAGES).map(([code, { name }]) => (
-                        <button
-                            key={code}
-                            onClick={() => setLang(code)}
-                            className={`px-3 py-1 rounded-lg text-sm font-medium transition-all ${lang === code
-                                    ? 'bg-white text-purple-900'
-                                    : 'text-white/70 hover:text-white hover:bg-white/10'
-                                }`}
-                        >
-                            {name}
-                        </button>
-                    ))}
+                <div className="relative">
+                    <button
+                        onClick={() => setShowLangMenu(!showLangMenu)}
+                        className="flex items-center gap-2 bg-white/10 backdrop-blur-lg rounded-xl px-4 py-3 hover:bg-white/20 transition-all"
+                    >
+                        <Globe className="w-5 h-5 text-white/70" />
+                        <span className="text-white font-medium">{LANGUAGES[lang]?.name || 'English'}</span>
+                        <ChevronDown className={`w-4 h-4 text-white/70 transition-transform ${showLangMenu ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {showLangMenu && (
+                        <div className="absolute right-0 top-full mt-2 w-72 bg-slate-800/95 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl shadow-black/50 overflow-hidden z-50">
+                            {/* General Languages */}
+                            <div className="p-2">
+                                <div className="px-3 py-2 text-xs font-semibold text-white/40 uppercase tracking-wider">
+                                    General
+                                </div>
+                                {generalLanguages.map((code) => (
+                                    <button
+                                        key={code}
+                                        onClick={() => { setLang(code); setShowLangMenu(false); }}
+                                        className={`w-full px-4 py-3 rounded-xl text-left font-medium transition-all flex items-center justify-between ${lang === code
+                                                ? 'bg-purple-500/30 text-white'
+                                                : 'text-white/70 hover:text-white hover:bg-white/10'
+                                            }`}
+                                    >
+                                        <span>{LANGUAGES[code]?.name}</span>
+                                        {lang === code && <CheckCircle className="w-4 h-4 text-purple-400" />}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* Assam Languages */}
+                            <div className="border-t border-white/10 p-2">
+                                <div className="px-3 py-2 text-xs font-semibold text-white/40 uppercase tracking-wider flex items-center gap-2">
+                                    <span>🏔️</span> Assam Languages
+                                </div>
+                                {assamLanguages.map((code) => (
+                                    <button
+                                        key={code}
+                                        onClick={() => { setLang(code); setShowLangMenu(false); }}
+                                        className={`w-full px-4 py-3 rounded-xl text-left font-medium transition-all flex items-center justify-between ${lang === code
+                                                ? 'bg-purple-500/30 text-white'
+                                                : 'text-white/70 hover:text-white hover:bg-white/10'
+                                            }`}
+                                    >
+                                        <span>{LANGUAGES[code]?.name}</span>
+                                        {lang === code && <CheckCircle className="w-4 h-4 text-purple-400" />}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
