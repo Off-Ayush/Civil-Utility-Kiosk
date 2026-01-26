@@ -10,12 +10,15 @@ import {
 
 const DashboardScreen = ({
     user,
-    serviceType,
+    serviceType: propServiceType,
     onLogout,
     onNavigate,
     t
 }) => {
     const [showNotifications, setShowNotifications] = useState(false);
+
+    // Default to 'electricity' if no service type selected (global registration)
+    const serviceType = propServiceType || 'electricity';
 
     const serviceIcons = {
         electricity: Zap,
@@ -31,7 +34,7 @@ const DashboardScreen = ({
         waste: 'from-green-400 to-emerald-500',
     };
 
-    const ServiceIcon = serviceIcons[serviceType];
+    const ServiceIcon = serviceIcons[serviceType] || Zap;
 
     // Mock data
     const billData = {
@@ -215,8 +218,8 @@ const DashboardScreen = ({
                                             <p className="text-emerald-400 font-medium">{activity.amount}</p>
                                         )}
                                         <span className={`text-xs px-2 py-0.5 rounded-full ${activity.status === 'success' ? 'bg-emerald-500/20 text-emerald-400' :
-                                                activity.status === 'resolved' ? 'bg-blue-500/20 text-blue-400' :
-                                                    'bg-yellow-500/20 text-yellow-400'
+                                            activity.status === 'resolved' ? 'bg-blue-500/20 text-blue-400' :
+                                                'bg-yellow-500/20 text-yellow-400'
                                             }`}>
                                             {activity.status}
                                         </span>
