@@ -15,7 +15,7 @@ module.exports = (req, res, next) => {
         const token = authHeader.split(' ')[1];
 
         // Verify token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'suvidha-demo-secret-2024');
 
         // Add user info to request
         req.user = decoded;
