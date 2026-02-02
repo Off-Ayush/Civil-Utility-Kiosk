@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS users (
   pincode VARCHAR(6) NOT NULL,
   
   -- Service Preferences (Optional - can be selected later)
-  preferred_services JSON DEFAULT NULL,
+  preferred_services JSON,
   
   -- Status & Timestamps
   status ENUM('active', 'inactive', 'suspended', 'pending_verification') DEFAULT 'pending_verification',
@@ -161,8 +161,9 @@ CREATE TABLE IF NOT EXISTS otp_records (
 );
 
 -- Create Indexes
-CREATE INDEX IF NOT EXISTS idx_user_consumer ON users(consumer_id);
-CREATE INDEX IF NOT EXISTS idx_bill_user ON bills(user_id);
-CREATE INDEX IF NOT EXISTS idx_bill_status ON bills(status);
-CREATE INDEX IF NOT EXISTS idx_complaint_tracking ON complaints(tracking_id);
-CREATE INDEX IF NOT EXISTS idx_transaction_ref ON transactions(transaction_reference);
+-- Note: 'IF NOT EXISTS' removed for compatibility. If indexes exist, these might error with 'Duplicate key name', which is fine.
+CREATE INDEX idx_user_consumer ON users(consumer_id);
+CREATE INDEX idx_bill_user ON bills(user_id);
+CREATE INDEX idx_bill_status ON bills(status);
+CREATE INDEX idx_complaint_tracking ON complaints(tracking_id);
+CREATE INDEX idx_transaction_ref ON transactions(transaction_reference);

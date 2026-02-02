@@ -124,7 +124,7 @@ const RegisterScreen = ({ onBack, onLogin, onRegisterSuccess, t }) => {
         setError('');
 
         try {
-            const response = await fetch('http://localhost:5001/api/auth/verify-aadhaar', {
+            const response = await fetch('https://civil-utility-kiosk.onrender.com/api/auth/verify-aadhaar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ aadhaarNumber: formData.aadhaarNumber })
@@ -222,7 +222,7 @@ const RegisterScreen = ({ onBack, onLogin, onRegisterSuccess, t }) => {
                 }
             });
 
-            const response = await fetch('http://localhost:5001/api/auth/register', {
+            const response = await fetch('https://civil-utility-kiosk.onrender.com/api/auth/register', {
                 method: 'POST',
                 body: submitData
             });

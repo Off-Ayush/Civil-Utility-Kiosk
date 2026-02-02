@@ -26,6 +26,11 @@ app.use('/api/complaint', require('./routes/complaint'));
 app.use('/api/service', require('./routes/service'));
 app.use('/api/receipt', require('./routes/receipt'));
 
+// Root endpoint
+app.get('/', (req, res) => {
+    res.json({ message: 'SUVIDHA Kiosk Backend is Running!', version: '1.0.0' });
+});
+
 // Health check
 app.get('/health', (req, res) => {
     res.json({ status: 'OK', message: 'SUVIDHA Kiosk API is running' });
