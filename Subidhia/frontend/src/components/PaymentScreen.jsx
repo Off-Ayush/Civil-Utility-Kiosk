@@ -4,12 +4,15 @@ import {
     Building2, Wallet, CheckCircle,
     Loader2, Shield, QrCode
 } from 'lucide-react';
+import BillReceipt from './BillReceipt';
+
 
 const PaymentScreen = ({ user, serviceType, onBack, t }) => {
     const [paymentMethod, setPaymentMethod] = useState('upi');
     const [upiId, setUpiId] = useState('');
     const [processing, setProcessing] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [transactionId, setTransactionId] = useState('');
 
     const serviceColors = {
         electricity: 'from-yellow-400 to-orange-500',
@@ -20,6 +23,14 @@ const PaymentScreen = ({ user, serviceType, onBack, t }) => {
 
     const billAmount = 2450;
 
+    // Bill details for receipt
+    const billDetails = {
+        billId: 'BILL001',
+        billingPeriod: 'Jan 2026',
+        consumption: '245 kWh',
+        dueDate: '2026-02-15'
+    };
+
     const paymentMethods = [
         { id: 'upi', icon: Smartphone, label: 'UPI' },
         { id: 'card', icon: CreditCard, label: 'Card' },
@@ -29,36 +40,27 @@ const PaymentScreen = ({ user, serviceType, onBack, t }) => {
 
     const handlePayment = () => {
         setProcessing(true);
+        // Generate transaction ID
+        const txnId = `TXN${Date.now()}`;
         setTimeout(() => {
             setProcessing(false);
+            setTransactionId(txnId);
             setSuccess(true);
         }, 3000);
     };
 
     if (success) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-8">
-                <div className="text-center">
-                    <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-emerald-500/20 mb-6 animate-bounce">
-                        <CheckCircle className="w-12 h-12 text-emerald-400" />
-                    </div>
-                    <h2 className="text-3xl font-bold text-white mb-3">{t.success}</h2>
-                    <p className="text-white/60 mb-2">Payment of ₹{billAmount} completed successfully</p>
-                    <p className="text-white/40 text-sm mb-8">Transaction ID: TXN{Date.now()}</p>
-
-                    <div className="flex gap-4 justify-center">
-                        <button className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all">
-                            {t.downloadReceipt}
-                        </button>
-                        <button
-                            onClick={onBack}
-                            className={`px-6 py-3 rounded-xl bg-gradient-to-r ${serviceColors[serviceType]} text-white font-semibold hover:opacity-90 transition-all`}
-                        >
-                            {t.back}
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <BillReceipt
+                user={user}
+                serviceType={serviceType}
+                billAmount={billAmount}
+                transactionId={transactionId}
+                paymentMethod={paymentMethod}
+                billDetails={billDetails}
+                onBack={onBack}
+                t={t}
+            />
         );
     }
 
@@ -96,8 +98,8 @@ const PaymentScreen = ({ user, serviceType, onBack, t }) => {
                                     key={id}
                                     onClick={() => setPaymentMethod(id)}
                                     className={`p-4 rounded-xl border transition-all flex flex-col items-center gap-2 ${paymentMethod === id
-                                            ? 'bg-purple-500/20 border-purple-500 text-purple-400'
-                                            : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
+                                        ? 'bg-purple-500/20 border-purple-500 text-purple-400'
+                                        : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
                                         }`}
                                 >
                                     <Icon className="w-6 h-6" />
