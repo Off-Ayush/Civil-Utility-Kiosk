@@ -31,9 +31,32 @@ app.get('/', (req, res) => {
     res.json({ message: 'SUVIDHA Kiosk Backend is Running!', version: '1.0.0' });
 });
 
-// Health check
-app.get('/health', (req, res) => {
-    res.json({ status: 'OK', message: 'SUVIDHA Kiosk API is running' });
+// Health check with DB status
+app.get('/health', async (req, res) => {
+    const { pool } = require('./config/database');
+    let dbStatus = 'DISCONNECTED';
+    let dbError = null;
+    try {
+        const connection = await pool.getConnection();
+        dbStatus = 'CONNECTED';
+        connection.release();
+    } catch (err) {
+        dbStatus = 'FAILED';
+        dbError = err.message;
+    }
+    res.json({
+        status: 'OK',
+        message: 'SUVIDHA Kiosk API is running',
+        database: dbStatus,
+        dbError: dbError,
+        env: {
+            DB_HOST: process.env.DB_HOST ? 'SET' : 'MISSING',
+            DB_PORT: process.env.DB_PORT ? 'SET' : 'MISSING',
+            DB_USER: process.env.DB_USER ? 'SET' : 'MISSING',
+            DB_PASSWORD: process.env.DB_PASSWORD ? 'SET' : 'MISSING',
+            DB_NAME: process.env.DB_NAME ? 'SET' : 'MISSING'
+        }
+    });
 });
 
 // Error handling middleware
