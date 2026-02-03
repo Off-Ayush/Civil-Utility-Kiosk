@@ -45,9 +45,13 @@ const initDatabase = async () => {
     try {
         const { pool: dbPool, testConnection } = require('../config/database');
         pool = dbPool;
-        await testConnection();
-        dbAvailable = true;
-        console.log('Database connected - using MySQL');
+        const isConnected = await testConnection();
+        dbAvailable = isConnected;
+        if (isConnected) {
+            console.log('Database connected - using MySQL');
+        } else {
+            console.log('Database connection failed check - using demo mode');
+        }
     } catch (error) {
         console.log('Database not available - using demo mode with file storage');
         dbAvailable = false;
