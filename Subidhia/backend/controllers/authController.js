@@ -396,6 +396,15 @@ exports.verifyAadhaar = async (req, res) => {
 
         const result = aadhaarService.validateFormat(cleanedAadhaar);
 
+        // Return early if validation failed
+        if (!result.isValid) {
+            return res.json({
+                success: false,
+                verified: false,
+                message: result.message
+            });
+        }
+
         // Check if already registered
         let isRegistered = false;
         if (dbAvailable) {
