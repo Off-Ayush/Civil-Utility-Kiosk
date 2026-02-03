@@ -1,4 +1,5 @@
 const mysql = require('mysql2/promise');
+const { runMigrations } = require('./migrations');
 
 const dbConfig = {
     host: process.env.DB_HOST || 'localhost',
@@ -14,12 +15,16 @@ const dbConfig = {
 
 const pool = mysql.createPool(dbConfig);
 
-// Test connection
+// Test connection and run migrations
 const testConnection = async () => {
     try {
         const connection = await pool.getConnection();
         console.log('Database connected successfully');
         connection.release();
+
+        // Auto-run migrations to ensure tables exist
+        await runMigrations(pool);
+
         return true;
     } catch (error) {
         console.error('Database connection failed:', error.message);
