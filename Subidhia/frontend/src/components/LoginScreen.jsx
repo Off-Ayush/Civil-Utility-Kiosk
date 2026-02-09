@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import {
     User, Lock, ArrowLeft, Shield,
-    Phone, Eye, EyeOff, Loader2, UserPlus
+    Phone, Eye, EyeOff, Loader2, UserPlus, Home
 } from 'lucide-react';
 
-const LoginScreen = ({ serviceType, onLogin, onBack, onRegister, t }) => {
+const LoginScreen = ({ serviceType, onLogin, onBack, onRegister, onUnifiedDashboard, t }) => {
     const [consumerId, setConsumerId] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -68,13 +68,13 @@ const LoginScreen = ({ serviceType, onLogin, onBack, onRegister, t }) => {
                 <div className="bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 p-8 shadow-2xl">
                     {/* Header */}
                     <div className="text-center mb-8">
-                        <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${currentColor} mb-4`}>
+                        <div className={`inline - flex p - 4 rounded - 2xl bg - gradient - to - br ${currentColor} mb - 4`}>
                             <User className="w-8 h-8 text-white" />
                         </div>
                         <h2 className="text-2xl font-bold text-white mb-2">{t?.login || 'Login'}</h2>
                         <p className="text-white/60">{t?.loginSubtitle || 'Access your account'}</p>
                         {serviceType && (
-                            <div className={`inline-block px-4 py-1 rounded-full bg-gradient-to-r ${currentColor} text-white text-sm font-medium mt-3`}>
+                            <div className={`inline - block px - 4 py - 1 rounded - full bg - gradient - to - r ${currentColor} text - white text - sm font - medium mt - 3`}>
                                 {t?.[serviceType] || serviceType}
                             </div>
                         )}
@@ -134,9 +134,9 @@ const LoginScreen = ({ serviceType, onLogin, onBack, onRegister, t }) => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`w-full py-4 rounded-xl bg-gradient-to-r ${currentColor} text-white font-semibold 
-                hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed
-                flex items-center justify-center gap-2`}
+                            className={`w - full py - 4 rounded - xl bg - gradient - to - r ${currentColor} text - white font - semibold
+hover: opacity - 90 active: scale - [0.98] transition - all disabled: opacity - 50 disabled: cursor - not - allowed
+                flex items - center justify - center gap - 2`}
                         >
                             {loading ? (
                                 <>
@@ -158,6 +158,19 @@ const LoginScreen = ({ serviceType, onLogin, onBack, onRegister, t }) => {
                         <span className="text-white/40 text-sm">or</span>
                         <div className="flex-1 h-px bg-white/10"></div>
                     </div>
+
+                    {/* Your Dashboard Button */}
+                    {onUnifiedDashboard && (
+                        <button
+                            onClick={onUnifiedDashboard}
+                            className="w-full py-4 rounded-xl mb-3 bg-gradient-to-r from-purple-500 to-pink-500 
+                                text-white font-semibold hover:opacity-90 active:scale-[0.98] transition-all 
+                                flex items-center justify-center gap-2"
+                        >
+                            <Home className="w-5 h-5" />
+                            <span>Your Dashboard (All Services)</span>
+                        </button>
+                    )}
 
                     {/* Register Button */}
                     <button

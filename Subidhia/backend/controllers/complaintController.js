@@ -3,6 +3,14 @@ exports.registerComplaint = async (req, res) => {
         const { userId, serviceType, complaintType, description } = req.body;
         const attachment = req.file;
 
+        // Validate required fields
+        if (!userId || !serviceType || !complaintType || !description) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required fields'
+            });
+        }
+
         // Generate tracking ID
         const trackingId = `CMP${Date.now().toString().slice(-8)}`;
 
@@ -19,6 +27,22 @@ exports.registerComplaint = async (req, res) => {
             createdAt: new Date()
         };
 
+        // Log activity
+        try {
+            const activityService = require('../services/activityService');
+            await activityService.logActivity(
+                userId,
+                serviceType,
+                'complaint',
+                `Registered complaint: ${complaintType}`,
+                null,
+                trackingId
+            );
+        } catch (activityError) {
+            console.error('Failed to log activity:', activityError);
+            // Continue even if activity logging fails
+        }
+
         res.json({
             success: true,
             message: 'Complaint registered successfully',
@@ -26,7 +50,11 @@ exports.registerComplaint = async (req, res) => {
             complaint
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        console.error('Error in registerComplaint:', error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while registering the complaint. Please try again.'
+        });
     }
 };
 

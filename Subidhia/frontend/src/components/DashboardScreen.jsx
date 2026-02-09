@@ -7,6 +7,7 @@ import {
     TrendingUp, Calendar, Download,
     ChevronRight, Activity
 } from 'lucide-react';
+import UserProfile from './UserProfile';
 
 const DashboardScreen = ({
     user,
@@ -16,6 +17,7 @@ const DashboardScreen = ({
     t
 }) => {
     const [showNotifications, setShowNotifications] = useState(false);
+    const [showProfile, setShowProfile] = useState(false);
 
     // Default to 'electricity' if no service type selected (global registration)
     const serviceType = propServiceType || 'electricity';
@@ -84,8 +86,11 @@ const DashboardScreen = ({
                             </span>
                         </button>
 
-                        {/* User Menu */}
-                        <div className="flex items-center gap-3 bg-white/10 rounded-xl p-2 pr-4">
+                        {/* User Profile */}
+                        <button
+                            onClick={() => setShowProfile(true)}
+                            className="flex items-center gap-3 bg-white/10 rounded-xl p-2 pr-4 hover:bg-white/20 transition-all cursor-pointer"
+                        >
                             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
                                 <User className="w-5 h-5 text-white" />
                             </div>
@@ -93,7 +98,7 @@ const DashboardScreen = ({
                                 <p className="text-white font-medium text-sm">{user.name}</p>
                                 <p className="text-white/50 text-xs">{user.consumerId}</p>
                             </div>
-                        </div>
+                        </button>
 
                         {/* Logout */}
                         <button
@@ -230,8 +235,17 @@ const DashboardScreen = ({
                     </div>
                 </div>
             </main>
+
+            {/* User Profile Modal */}
+            {showProfile && (
+                <UserProfile
+                    user={user}
+                    onClose={() => setShowProfile(false)}
+                />
+            )}
         </div>
     );
 };
 
 export default DashboardScreen;
+

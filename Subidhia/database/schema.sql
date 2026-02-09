@@ -1,11 +1,11 @@
--- 1. DROP the database to clear old warnings (This gives a Green Tick)
+-- 1. DROP the database 
 DROP DATABASE IF EXISTS suvidha_kiosk;
 
--- 2. CREATE it fresh (Green Tick)
+-- 2. CREATE it fresh 
 CREATE DATABASE suvidha_kiosk;
 USE suvidha_kiosk;
 
--- 3. Create Tables (All Green Ticks)
+-- 3. Create Tables 
 CREATE TABLE users (
   user_id INT PRIMARY KEY AUTO_INCREMENT,
   consumer_id VARCHAR(50) UNIQUE NOT NULL,
@@ -134,6 +134,34 @@ CREATE TABLE otp_records (
   attempts INT DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_mobile_otp (mobile, otp_code)
+);
+
+CREATE TABLE user_activities (
+  activity_id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  service_type ENUM('electricity', 'gas', 'water', 'waste') NOT NULL,
+  activity_type ENUM('bill_payment', 'complaint', 'new_connection', 'profile_update') NOT NULL,
+  description TEXT NOT NULL,
+  amount DECIMAL(10, 2),
+  reference_id VARCHAR(100),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  INDEX idx_user_service (user_id, service_type),
+  INDEX idx_activity_date (created_at)
+);
+
+CREATE TABLE password_reset_requests (
+  request_id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  aadhaar_number VARCHAR(12) NOT NULL,
+  otp_code VARCHAR(6),
+  otp_verified BOOLEAN DEFAULT FALSE,
+  new_password_hash VARCHAR(255),
+  status ENUM('pending', 'otp_sent', 'otp_verified', 'completed', 'expired') DEFAULT 'pending',
+  expires_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  INDEX idx_user_status (user_id, status)
 );
 
 -- Indexes

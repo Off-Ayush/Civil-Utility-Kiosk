@@ -3,6 +3,7 @@ import HomeScreen from './components/HomeScreen';
 import LoginScreen from './components/LoginScreen';
 import RegisterScreen from './components/RegisterScreen';
 import DashboardScreen from './components/DashboardScreen';
+import UnifiedDashboard from './components/UnifiedDashboard';
 import PaymentScreen from './components/PaymentScreen';
 import ComplaintScreen from './components/ComplaintScreen';
 import AdminDashboard from './components/AdminDashboard';
@@ -31,6 +32,11 @@ const App = () => {
     const handleServiceSelect = (service) => {
         setServiceType(service);
         setScreen('login');
+    };
+
+    const handleUnifiedDashboard = () => {
+        setServiceType(null);
+        setScreen('unified');
     };
 
     const handleLogin = (userData, token) => {
@@ -62,7 +68,10 @@ const App = () => {
         setScreen('home');
     };
 
-    const handleNavigate = (destination) => {
+    const handleNavigate = (destination, newServiceType = null) => {
+        if (newServiceType) {
+            setServiceType(newServiceType);
+        }
         setScreen(destination);
     };
 
@@ -107,6 +116,7 @@ const App = () => {
                     onLogin={handleLogin}
                     onBack={handleBack}
                     onRegister={handleGoToRegister}
+                    onUnifiedDashboard={handleUnifiedDashboard}
                     t={t}
                 />
             )}
@@ -116,6 +126,15 @@ const App = () => {
                     onBack={handleBack}
                     onLogin={handleGoToLogin}
                     onRegisterSuccess={handleRegisterSuccess}
+                    t={t}
+                />
+            )}
+
+            {screen === 'unified' && user && (
+                <UnifiedDashboard
+                    user={user}
+                    onLogout={handleLogout}
+                    onNavigate={handleNavigate}
                     t={t}
                 />
             )}

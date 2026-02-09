@@ -25,6 +25,7 @@ app.use('/api/payment', require('./routes/payment'));
 app.use('/api/complaint', require('./routes/complaint'));
 app.use('/api/service', require('./routes/service'));
 app.use('/api/receipt', require('./routes/receipt'));
+app.use('/api/activity', require('./routes/activity'));
 
 // Root endpoint
 app.get('/', (req, res) => {

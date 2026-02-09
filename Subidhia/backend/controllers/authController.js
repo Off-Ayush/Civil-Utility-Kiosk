@@ -540,3 +540,239 @@ exports.uploadDocument = async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to upload document' });
     }
 };
+
+/**
+ * Get user profile by userId with masked Aadhaar
+ * GET /api/auth/profile/:userId
+ */
+exports.getUserProfile = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        let user = null;
+
+        if (dbAvailable) {
+            const [users] = await pool.execute(
+                `SELECT * FROM users WHERE user_id = ?`,
+                [userId]
+            );
+            if (users.length > 0) user = users[0];
+        } else {
+            user = demoUsers.find(u => u.userId === parseInt(userId));
+        }
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // Mask Aadhaar number (show only last 4 digits)
+        const aadhaarNumber = user.aadhaar_number || user.aadhaarNumber;
+        const maskedAadhaar = aadhaarNumber.replace(/(\d{4})(\d{4})(\d{4})/, 'XXXX-XXXX-$3');
+
+        res.json({
+            success: true,
+            user: {
+                userId: user.user_id || user.userId,
+                consumerId: user.consumer_id || user.consumerId,
+                name: user.name,
+                email: user.email,
+                mobile: user.mobile,
+                alternateMobile: user.alternate_mobile || user.alternateMobile,
+                maskedAadhaar,
+                aadhaarNumber: aadhaarNumber, // Full Aadhaar for verification (backend only)
+                address: {
+                    line1: user.address_line1 || user.addressLine1,
+                    line2: user.address_line2 || user.addressLine2,
+                    landmark: user.landmark,
+                    city: user.city,
+                    district: user.district,
+                    state: user.state,
+                    pincode: user.pincode
+                },
+                profilePhotoUrl: user.profile_photo_url || user.profilePhotoUrl
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ success: false, message: 'Failed to fetch profile' });
+    }
+};
+
+/**
+ * Request password reset
+ * POST /api/auth/reset-password/request
+ */
+exports.requestPasswordReset = async (req, res) => {
+    try {
+        const { userId, aadhaarNumber } = req.body;
+
+        if (!userId || !aadhaarNumber) {
+            return res.status(400).json({
+                success: false,
+                message: 'User ID and Aadhaar number are required'
+            });
+        }
+
+        const cleanedAadhaar = aadhaarNumber.replace(/[\\s-]/g, '');
+        let user = null;
+
+        // Verify user and Aadhaar match
+        if (dbAvailable) {
+            const [users] = await pool.execute(
+                `SELECT * FROM users WHERE user_id = ? AND aadhaar_number = ?`,
+                [userId, cleanedAadhaar]
+            );
+            if (users.length > 0) user = users[0];
+        } else {
+            user = demoUsers.find(u =>
+                u.userId === parseInt(userId) && u.aadhaarNumber === cleanedAadhaar
+            );
+        }
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found or Aadhaar mismatch'
+            });
+        }
+
+        // Generate master OTP: 9898 (hardcoded for demo)
+        const masterOTP = '9898';
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+        // Store OTP request
+        if (dbAvailable) {
+            await pool.execute(
+                `INSERT INTO password_reset_requests 
+                (user_id, aadhaar_number, otp_code, status, expires_at)
+                VALUES (?, ?, ?, 'otp_sent', ?)`,
+                [userId, cleanedAadhaar, masterOTP, expiresAt]
+            );
+        }
+
+        res.json({
+            success: true,
+            message: 'OTP sent successfully (Master OTP: 9898)',
+            otpSent: true
+        });
+    } catch (error) {
+        console.error('Error in requestPasswordReset:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to process password reset request'
+        });
+    }
+};
+
+/**
+ * Verify OTP for password reset
+ * POST /api/auth/reset-password/verify-otp
+ */
+exports.verifyResetOTP = async (req, res) => {
+    try {
+        const { userId, otp } = req.body;
+
+        if (!userId || !otp) {
+            return res.status(400).json({
+                success: false,
+                message: 'User ID and OTP are required'
+            });
+        }
+
+        // Master OTP is always 9898
+        if (otp === '9898') {
+            // Update request status
+            if (dbAvailable) {
+                await pool.execute(
+                    `UPDATE password_reset_requests 
+                    SET otp_verified = TRUE, status = 'otp_verified'
+                    WHERE user_id = ? AND status = 'otp_sent' AND expires_at > NOW()`,
+                    [userId]
+                );
+            }
+
+            res.json({
+                success: true,
+                message: 'OTP verified successfully',
+                verified: true
+            });
+        } else {
+            res.status(400).json({
+                success: false,
+                message: 'Invalid OTP',
+                verified: false
+            });
+        }
+    } catch (error) {
+        console.error('Error in verifyResetOTP:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to verify OTP'
+        });
+    }
+};
+
+/**
+ * Confirm password reset with new password
+ * POST /api/auth/reset-password/confirm
+ */
+exports.confirmPasswordReset = async (req, res) => {
+    try {
+        const { userId, newPassword } = req.body;
+
+        if (!userId || !newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'User ID and new password are required'
+            });
+        }
+
+        // Hash new password
+        const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 12;
+        const newPasswordHash = await bcrypt.hash(newPassword, saltRounds);
+
+        // Update password
+        if (dbAvailable) {
+            const [result] = await pool.execute(
+                `UPDATE users SET password_hash = ? WHERE user_id = ?`,
+                [newPasswordHash, userId]
+            );
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'User not found'
+                });
+            }
+
+            // Mark reset request as completed
+            await pool.execute(
+                `UPDATE password_reset_requests 
+                SET status = 'completed', new_password_hash = ?
+                WHERE user_id = ? AND status = 'otp_verified'`,
+                [newPasswordHash, userId]
+            );
+        } else {
+            const userIndex = demoUsers.findIndex(u => u.userId === parseInt(userId));
+            if (userIndex === -1) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'User not found'
+                });
+            }
+            demoUsers[userIndex].passwordHash = newPasswordHash;
+            saveDemoUsers();
+        }
+
+        res.json({
+            success: true,
+            message: 'Password reset successfully'
+        });
+    } catch (error) {
+        console.error('Error in confirmPasswordReset:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to reset password'
+        });
+    }
+};
+

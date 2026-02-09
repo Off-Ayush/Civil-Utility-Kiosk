@@ -14,6 +14,12 @@ router.post('/logout', authController.logout);
 
 // Protected routes (require authentication)
 router.get('/profile', authMiddleware, authController.getProfile);
+router.get('/profile/:userId', authController.getUserProfile);
 router.post('/upload-document', authMiddleware, uploadDocument.single('document'), handleMulterError, authController.uploadDocument);
+
+// Password reset routes
+router.post('/reset-password/request', authController.requestPasswordReset);
+router.post('/reset-password/verify-otp', authController.verifyResetOTP);
+router.post('/reset-password/confirm', authController.confirmPasswordReset);
 
 module.exports = router;

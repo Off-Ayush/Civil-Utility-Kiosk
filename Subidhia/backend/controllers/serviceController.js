@@ -1,8 +1,16 @@
 exports.applyNewConnection = async (req, res) => {
     try {
-        const { applicantName, mobile, email, address, serviceType, connectionType } = req.body;
+        const { applicantName, mobile, email, address, serviceType, connectionType, userId } = req.body;
         const idProof = req.files?.idProof?.[0];
         const addressProof = req.files?.addressProof?.[0];
+
+        // Validate required fields
+        if (!applicantName || !mobile || !address || !serviceType || !connectionType) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required fields'
+            });
+        }
 
         // Generate application number
         const applicationNumber = `APP${Date.now().toString().slice(-8)}`;
@@ -22,6 +30,23 @@ exports.applyNewConnection = async (req, res) => {
             createdAt: new Date()
         };
 
+        // Log activity if userId is provided
+        if (userId) {
+            try {
+                const activityService = require('../services/activityService');
+                await activityService.logActivity(
+                    userId,
+                    serviceType,
+                    'new_connection',
+                    `New connection request for ${connectionType} service`,
+                    null,
+                    applicationNumber
+                );
+            } catch (activityError) {
+                console.error('Failed to log activity:', activityError);
+            }
+        }
+
         res.json({
             success: true,
             message: 'Application submitted successfully',
@@ -29,7 +54,11 @@ exports.applyNewConnection = async (req, res) => {
             application
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        console.error('Error in applyNewConnection:', error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while submitting the application. Please try again.'
+        });
     }
 };
 
