@@ -18,22 +18,22 @@
 
 SUVIDHA is a unified kiosk system that provides seamless access to multiple civic utility services:
 
-- ⚡ **Electricity** - Bill payments, new connections, complaints
-- 🔥 **Gas** - Bill payments, safety checks, leak reports
-- 💧 **Water** - Bill payments, quality issues, supply problems
-- ♻️ **Waste Management** - Pickup scheduling, disposal requests
+-  **Electricity** - Bill payments, new connections, complaints
+-  **Gas** - Bill payments, safety checks, leak reports
+-  **Water** - Bill payments, quality issues, supply problems
+-  **Waste Management** - Pickup scheduling, disposal requests
 
-## ✨ Features
+##  Features
 
-- 🌐 **Multilingual Support** - English, Hindi, Tamil
-- 🔐 **Secure Authentication** - JWT-based with OTP support
-- 💳 **Integrated Payments** - Razorpay with UPI, Card, Net Banking
-- 📱 **Responsive Design** - Works on all screen sizes
-- 📊 **Admin Dashboard** - Real-time analytics and management
-- 📝 **Complaint Tracking** - Full lifecycle management
-- 📄 **Document Upload** - Support for ID and address proofs
+- **Multilingual Support** - English, Hindi, Tamil
+-  **Secure Authentication** - JWT-based with OTP support
+-  **Integrated Payments** - Razorpay with UPI, Card, Net Banking
+-  **Responsive Design** - Works on all screen sizes
+-  **Admin Dashboard** - Real-time analytics and management
+-  **Complaint Tracking** - Full lifecycle management
+-  **Document Upload** - Support for ID and address proofs
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Layer | Technologies |
 |-------|-------------|
@@ -44,7 +44,7 @@ SUVIDHA is a unified kiosk system that provides seamless access to multiple civi
 | Payments | Razorpay |
 | Deployment | Docker, Nginx |
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 SUVIDHA-Kiosk/
@@ -55,7 +55,7 @@ SUVIDHA-Kiosk/
 └── documentation/      # Project documentation
 ```
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 - Node.js v16+
@@ -97,14 +97,14 @@ cd docker
 docker-compose up -d
 ```
 
-## 📖 Documentation
+##  Documentation
 
 - [API Documentation](documentation/API_Documentation.md)
 - [Deployment Guide](documentation/Deployment_Guide.md)
 - [User Manual](documentation/User_Manual.md)
 - [Technical Architecture](documentation/Technical_Architecture.md)
 
-## 🔧 Configuration
+##  Configuration
 
 Copy `.env.example` to `.env` and configure:
 
@@ -119,13 +119,13 @@ RAZORPAY_KEY_ID=your_key
 RAZORPAY_KEY_SECRET=your_secret
 ```
 
-## 📱 Screenshots
+##  Screenshots
 
 | Home Screen | Dashboard | Payment |
 |-------------|-----------|---------|
 | Service Selection | User Dashboard | Bill Payment |
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
@@ -133,11 +133,7 @@ RAZORPAY_KEY_SECRET=your_secret
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Support
+##  Support
 
 - **Helpline**: 1800-XXX-XXXX
 - **Email**: support@suvidha.gov.in
@@ -145,5 +141,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <div align="center">
-Made with ❤️ for Digital India
+Made with for Digital India
 </div>
