@@ -211,7 +211,7 @@ exports.register = async (req, res) => {
                     success: true,
                     message: 'Registration successful',
                     token,
-                    user: { consumerId, name, email, mobile, aadhaarVerified: true, profilePhotoUrl }
+                    user: { userId, consumerId, name, email, mobile, aadhaarVerified: true, profilePhotoUrl }
                 });
             } catch (dbError) {
                 console.error('Database error during registration:', dbError);
@@ -278,7 +278,7 @@ exports.register = async (req, res) => {
                 success: true,
                 message: 'Registration successful (Demo Mode)',
                 token,
-                user: { consumerId, name, email, mobile, aadhaarVerified: true, profilePhotoUrl }
+                user: { userId, consumerId, name, email, mobile, aadhaarVerified: true, profilePhotoUrl }
             });
         }
     } catch (error) {
@@ -363,6 +363,7 @@ exports.login = async (req, res) => {
             success: true,
             token,
             user: {
+                userId: user.user_id || user.userId,
                 consumerId: user.consumer_id || user.consumerId,
                 name: user.name,
                 email: user.email,
@@ -612,7 +613,7 @@ exports.requestPasswordReset = async (req, res) => {
             });
         }
 
-        const cleanedAadhaar = aadhaarNumber.replace(/[\\s-]/g, '');
+        const cleanedAadhaar = aadhaarNumber.replace(/[\s-]/g, '');
         let user = null;
 
         // Verify user and Aadhaar match

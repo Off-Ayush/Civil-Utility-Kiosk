@@ -143,6 +143,36 @@ const runMigrations = async (pool) => {
             attempts INT DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             INDEX idx_mobile_otp (mobile, otp_code)
+        )`,
+
+        // User activities table
+        `CREATE TABLE IF NOT EXISTS user_activities (
+            activity_id INT PRIMARY KEY AUTO_INCREMENT,
+            user_id INT NOT NULL,
+            service_type VARCHAR(50) NOT NULL,
+            activity_type VARCHAR(50) NOT NULL,
+            description TEXT NOT NULL,
+            amount DECIMAL(10, 2),
+            reference_id VARCHAR(100),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(user_id),
+            INDEX idx_user_service (user_id, service_type),
+            INDEX idx_created (created_at)
+        )`,
+
+        // Password reset requests table
+        `CREATE TABLE IF NOT EXISTS password_reset_requests (
+            reset_id INT PRIMARY KEY AUTO_INCREMENT,
+            user_id INT NOT NULL,
+            aadhaar_number VARCHAR(12) NOT NULL,
+            otp_code VARCHAR(6) NOT NULL,
+            otp_verified BOOLEAN DEFAULT FALSE,
+            new_password_hash VARCHAR(255),
+            status ENUM('otp_sent', 'otp_verified', 'completed', 'expired') DEFAULT 'otp_sent',
+            expires_at TIMESTAMP NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(user_id),
+            INDEX idx_user_status (user_id, status)
         )`
     ];
 

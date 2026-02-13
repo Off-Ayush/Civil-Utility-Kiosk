@@ -1,4 +1,4 @@
-const db = require('../config/database');
+const { pool } = require('../config/database');
 
 /**
  * Log user activity to database
@@ -11,7 +11,6 @@ const db = require('../config/database');
  */
 const logActivity = async (userId, serviceType, activityType, description, amount = null, referenceId = null) => {
     try {
-        const pool = await db.getPool();
         const query = `
             INSERT INTO user_activities 
             (user_id, service_type, activity_type, description, amount, reference_id)
@@ -34,7 +33,6 @@ const logActivity = async (userId, serviceType, activityType, description, amoun
  */
 const getActivitiesByUserAndService = async (userId, serviceType = null) => {
     try {
-        const pool = await db.getPool();
         let query = `
             SELECT activity_id, service_type, activity_type, description, 
                    amount, reference_id, created_at

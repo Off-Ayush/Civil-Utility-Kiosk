@@ -100,7 +100,7 @@ const BillReceipt = ({
     const handleSendEmail = async () => {
         setSending(prev => ({ ...prev, email: true }));
         try {
-            const response = await fetch('/api/receipt/send-email', {
+            const response = await fetch('https://civil-utility-kiosk.onrender.com/api/receipt/send-email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ const BillReceipt = ({
     const handleSendSMS = async () => {
         setSending(prev => ({ ...prev, sms: true }));
         try {
-            const response = await fetch('/api/receipt/send-sms', {
+            const response = await fetch('https://civil-utility-kiosk.onrender.com/api/receipt/send-sms', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
