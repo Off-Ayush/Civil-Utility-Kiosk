@@ -7,7 +7,9 @@ import {
 import BillReceipt from './BillReceipt';
 
 
-const PaymentScreen = ({ user, serviceType, onBack, t }) => {
+const PaymentScreen = ({ user, serviceType: propServiceType, onBack, t }) => {
+    // Default to 'electricity' if no service type selected
+    const serviceType = propServiceType || 'electricity';
     const [paymentMethod, setPaymentMethod] = useState('upi');
     const [upiId, setUpiId] = useState('');
     const [processing, setProcessing] = useState(false);

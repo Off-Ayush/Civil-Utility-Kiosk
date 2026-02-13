@@ -35,8 +35,15 @@ const App = () => {
     };
 
     const handleUnifiedDashboard = () => {
-        setServiceType(null);
-        setScreen('unified');
+        if (user && authToken) {
+            // Already logged in, go directly to unified dashboard
+            setServiceType(null);
+            setScreen('unified');
+        } else {
+            // Not logged in yet — they need to log in first, then we'll redirect
+            setServiceType(null);
+            setScreen('login');
+        }
     };
 
     const handleLogin = (userData, token) => {

@@ -5,7 +5,9 @@ import {
     Zap, Flame, Droplet, Trash2
 } from 'lucide-react';
 
-const ComplaintScreen = ({ user, serviceType, onBack, t }) => {
+const ComplaintScreen = ({ user, serviceType: propServiceType, onBack, t }) => {
+    // Default to 'electricity' if no service type selected
+    const serviceType = propServiceType || 'electricity';
     const [complaintType, setComplaintType] = useState('');
     const [description, setDescription] = useState('');
     const [file, setFile] = useState(null);
@@ -97,8 +99,8 @@ const ComplaintScreen = ({ user, serviceType, onBack, t }) => {
                                         key={type}
                                         onClick={() => setComplaintType(type)}
                                         className={`p-4 rounded-xl border transition-all text-center ${complaintType === type
-                                                ? 'bg-purple-500/20 border-purple-500 text-purple-400'
-                                                : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
+                                            ? 'bg-purple-500/20 border-purple-500 text-purple-400'
+                                            : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
                                             }`}
                                     >
                                         <span className="text-sm font-medium">{t[type]}</span>
